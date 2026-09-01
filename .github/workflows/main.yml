@@ -17,7 +17,7 @@ jobs:
 
       # Combine CSS files into a single CSS file
       - name: Combine CSS files
-        run: cat styles/*.css > chatedit.css
+        run: cat styles/*.css > say-as.css
 
       # Strip the leading `v` from the tag (e.g. v0.9.0 -> 0.9.0).
       - name: Extract tag version number
@@ -38,8 +38,8 @@ jobs:
           url: https://github.com/${{ github.repository }}
           manifest: https://github.com/${{ github.repository }}/releases/latest/download/module.json
           download: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/module.zip
-          styles: '["chatedit.css"]'
-          esmodules: '["chatedit.mjs"]'
+          styles: '["say-as.css"]'
+          esmodules: '["say-as.mjs"]'
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -56,7 +56,7 @@ jobs:
         run: npm run build
 
       - name: Create ZIP archive
-        run: zip -r ./module.zip module.json chatedit.mjs chatedit.css lang/ templates/
+        run: zip -r ./module.zip module.json say-as.mjs say-as.css lang/
 
       # Attach the manifest and package to the release that triggered this run,
       # preserving its prerelease flag.

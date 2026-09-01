@@ -1,14 +1,14 @@
 {
-  "id": "breweries-chat-edit",
-  "title": "Breweries' Chat Edit",
+  "id": "breweries-say-as",
+  "title": "Say As",
   "version": "1.0.0",
+  "description": "Change who a chat message was said by, from the message's right-click menu. Works on rolls.",
   "esmodules": [
     "scripts/setup.mjs"
   ],
   "styles": [
-    "styles/chatedit-styles.css"
+    "styles/say-as.css"
   ],
-  "socket": true,
   "compatibility": {
     "minimum": "13",
     "verified": "14"
@@ -24,13 +24,11 @@
     "hotReload": {
       "extensions": [
         "css",
-        "json",
-        "hbs"
+        "json"
       ],
       "paths": [
         "styles",
-        "lang",
-        "templates"
+        "lang"
       ]
     }
   },

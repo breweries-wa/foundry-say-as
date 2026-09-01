@@ -1,5 +1,5 @@
 {
-  "name": "breweries-chat-edit",
+  "name": "breweries-say-as",
   "version": "1.0.0",
   "scripts": {
     "build": "rollup -c rollup.config.mjs"

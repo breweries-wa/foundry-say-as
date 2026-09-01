@@ -1,43 +1,12 @@
 {
-  "CHATEDIT": {
-    "EDITS": {
-      "Alias": "Alias",
-      "Clear": "Clear",
-      "Edit": "Edit Message",
-      "Language": "Language",
-      "Flag": "(edited)",
-      "IC": "Make In Character",
-      "NotAllowed": "Cannot edit this message.",
-      "OOC": "Make Out of Character",
-      "Edited": "Edited Message",
-      "Preview": "Preview",
-      "Speaker": "Speaker",
-      "Title": "Editing Message"
-    },
-    "TYPING": {
-      "One": "{name} is typing…",
-      "Two": "{name1} and {name2} are typing…",
-      "Many": "Several people are typing…"
-    },
+  "SAYAS": {
+    "SpeakAsSelected": "Say As Selected Token",
+    "AttributeToMe": "Say Out Of Character",
+    "NoTarget": "Select a token, or assign yourself a character, first.",
     "SETTINGS": {
-      "AllowEdit": {
-        "Name": "Allow Editing",
-        "Hint": "Allow messages to be edited (via right click)."
-      },
-      "Markdown": {
-        "Name": "Markdown Styling",
-        "Hint": "Enable markdown styling of chat messages."
-      },
-      "Typing": {
-        "Name": "Typing Indicator",
-        "Hint": "Show a Discord-style \"is typing\" indicator above the chat box when other players are composing a message. A leading \"/\" (commands and whispers) is never broadcast."
-      },
-      "ShowEdited": {
-        "Icon": "Show Icon",
-        "Message": "Show Message",
-        "None": "Do Not Show",
-        "Name": "Show Edited Messages",
-        "Hint": "Show a small label on messages that have been edited."
+      "Enabled": {
+        "Name": "Enable Say As",
+        "Hint": "Add the speaker reassignment options to the chat message right-click menu."
       }
     }
   }

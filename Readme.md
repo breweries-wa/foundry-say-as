@@ -1,98 +1,41 @@
-# Breweries' Chat Edit
-A module for editing and styling chat messages. It is a lightweight chat editor, with no module dependencies and no external libraries. It is *not* a 'chat enhancement' module (though it might be mistaken for one). Its intent is to bring the Foundry chat message experience to the bare minimum of acceptability for text roleplay.
+# Say As
 
-> **This is a fork** of [Scorpious187's Chat Edit](https://github.com/nscarpinatodev/scorpious187s-chatedit), which is itself a fork of [alakshana's Chat Edit](https://github.com/etiquettestartshere/chatedit) by way of [rydoq's Chat Edit Anduril](https://github.com/rydoq/chatedit-new). Nearly all of the work here belongs to them; see Additional Info below.
->
-> **What this fork changes:**
-> - **Speaker reassignment works on roll messages.** Upstream blocks *all* context-menu actions on rolls because editing a roll's `content` would desync it from its `rolls` array. But "Make In/Out of Character" only ever writes `speaker` and `style`, never `content`, so that restriction does not apply to them. Content editing is still blocked on rolls, as it should be.
-> - **"Make In Character" is offered on messages that are already in character.** Upstream only showed it on OOC messages, so correcting a message sent as the *wrong* character required a round-trip through OOC. Now it is a single action: select the right token, right-click, Make In Character.
-> - **A roll's `style` is left untouched during reassignment.** The emote heuristic compares message content against the speaker's name, which is meaningless for generated dice HTML and would restyle the roll card.
-> - **Dropped the `scorpious187s-lib` dependency.** No source file in this module references it; it was added upstream to register the module with the author's cross-module update notifier. Removing it makes this a single-manifest install.
+A Foundry VTT module that does one thing: **change who a chat message was said by**, from the message's right-click menu.
 
-## Features
-<p style="text-align: center"><img src="https://i.imgur.com/p2E8Jtg.png" style="border: none" alt="An image showing message editing in Foundry and markdown support"></p>
+You typed as the wrong character. Someone points it out. Select the right token, right-click the message, and pick **Say As Selected Token**. Done.
 
-Allows the editing of chat messages that *you* created (GMs cannot edit messages from other users); change the speaker (potential speakers include only owned tokens on the currently viewed scene), alias, and style, and process chat messages with Foundry's built-in markdown processor (Showdown) for *emphasis*, **bold**, and ~~more~~.
+Foundry v13+ (verified on v14). System agnostic. No dependencies.
 
-If <a href= "https://foundryvtt.com/packages/polyglot">Polyglot</a> is enabled, allows the user to change the language the token is speaking. The default language shows at the top of the list if the token speaks it. If the user is a GM and are speaking out of character, they may select from any language. And if the token speaks no languages, the user may select from any language. It sounds complicated, but it should work just the same as Polyglot.
+## Usage
 
-## Settings
-- Allow Editing (on by default). *World setting*.
-- Show Edited Messages: show message, show icon, do not show (shows icon by default). *World setting*. - The show message option has a visual bug where as the timestamp changes, the game adds or removes a whitespace. I recommend using the icon.
-- Markdown Styling (on by default). *Client setting*.
+Right-clicking a chat message you sent adds up to two options:
 
-## Foundry Compatibility
-Supports Foundry v13 and v14 (minimum v13, verified on v14). If you want a version that supports v11 or v12 of Foundry, please download from the original mod here: https://github.com/etiquettestartshere/chatedit. Note it will not have Polyglot support.
+- **Say As Selected Token** — reattributes the message to your currently selected token, or to your assigned character if no token is selected. Shown whenever something is selected to attribute to.
+- **Say Out Of Character** — reattributes the message to you, out of character. Shown only when the message is currently attributed to a character.
 
-## System Requirements
-This module is, to the best of my abilities, designed to be system agnostic. The most obvious failure point would be allowing messages that are not supposed to be edited to be edited, or the (edited) message or icon displaying incorrectly depending on system's chat cards. The original mod was tested on dnd5e and swb and I've tested it on PF2e. If you find that it does not function as desired on another system, please make a github issue about it and compatibility will be investigated.
+**Roll messages work.** `/roll 1d20 # search check` sent as the wrong character can be corrected like any other message.
 
-## Limitations
-Does not correctly support certain markdown styles, such as sorted or unsorted lists. This is due to, I believe, how foundry handles line breaks. Personally I have no use for them and am only after inline styling, so if someone wants this to work correctly I would be open to pull requests.
+## What it does not do
 
-## Hooks
-The below hooks are intended for module developers or world script enjoyers who may be touching or processing ChatMessages, to ensure that their changes happen before or after this module's changes, or for whatever other reason.
-```js
-/**
- * Hook called before the markdown processing is completed and applied. Return `false` to prevent processing.
- * @param {ChatMessage} message       The ChatMessage to be processed.
- * @param {string} parsed             The message content after being parsed by Showdown.
- * @param {showdown.Converter} parser The Showdown parser.
- * @param {string} userid             The id of the user who created or is processing the message.
- */
-Hooks.call("chatedit.preProcessChatMessage", message, parsed, parser, userid);
-```
-```js
-/**
- * Hook called after the message is processed.
- * @param {ChatMessage} message       The ChatMessage to be processed.
- * @param {string} parsed             The message content after being parsed by Showdown.
- * @param {showdown.Converter} parser The Showdown parser.
- * @param {string} userid             The id of the user who created or is processing the message.
- */
-Hooks.callAll("chatedit.processChatMessage", message, parsed, parser, userid);
-```
-```js
-/**
- * Hook called before the edit is completed and applied. Return `false` to prevent processing.
- * @param {ChatMessage} message      The ChatMessage to be processed.
- * @param {string} parsed            The message content after being parsed by Showdown.
- * @param {object} [changed]         Differential data that will be used to update the document.
- * @param {string} [changed.content] The message content as edited by the application.
- * @param {object} [changed.speaker] The speaker object as edited by the application.
- * @param {number} [changed.style]   The edited type (version 11) or style (version 12) of the message document.
- * @param {string} [changed.flags]   The message flags, which may contain module data.
- * @param {object} data              The formData from the application.
- * @param {string} userid            The id of the user who created or is processing the message.
- */
-Hooks.call("chatedit.preEditChatMessage", message, { content, speaker, style, flags }, data, userid);
-```
-```js
-/**
- * Hook called after the edit is completed.
- * @param {ChatMessage} message      The ChatMessage to be processed.
- * @param {string} parsed            The message content after being parsed by Showdown.
- * @param {object} [changed]         Differential data that will be used to update the document.
- * @param {string} [changed.content] The message content as edited by the application.
- * @param {object} [changed.speaker] The speaker object as edited by the application.
- * @param {number} [changed.style]   The edited type (version 11) or style (version 12) of the message document.
- * @param {string} [changed.flags]   The message flags, which may contain module data.
- * @param {object} data              The formData from the application.
- * @param {string} userid            The id of the user who created or is processing the message.
- */
-Hooks.callAll("chatedit.editChatMessage", message, { content, speaker, style, flags }, data, userid);
-```
+Nothing else. It does not edit message text, add markdown, show typing indicators, or change portraits. If you want those, use [Scorpious187's Chat Edit](https://github.com/nscarpinatodev/scorpious187s-chatedit), which this was carved out of.
 
-### Future Plans
-I would like to fix the visual problem on the edit window with the extra spaces at the start of lines. Other than that, I don't have any other plans besides keeping this up to date with Foundry's newest release.
-___
+## Notes and limitations
 
-###### **Technical Details**
+- **You can only reassign messages you sent.** Foundry exposes this as `message.isAuthor`; a GM cannot correct another player's message through this menu.
+- **The speaker comes from your selected token**, so the target must be on the scene you are viewing.
+- **Whispers are excluded**, since changing a whisper's speaker does not change who can see it and the result would be misleading.
+- **System chat cards are excluded.** Messages carrying flags for the active system (item cards, action cards) can re-derive their actor from those flags, so reassigning the speaker alone would leave the two disagreeing.
+- **Message style is preserved on rolls.** For ordinary messages the module keeps the original emote/IC/OOC behaviour, but a roll's content is generated dice HTML, so its style is left untouched.
+- If [Polyglot](https://foundryvtt.com/packages/polyglot) is active, the message's language follows the new speaker. If PF2e Dorako UI is active, its cached avatar follows too.
 
-**Scope:** A custom application for appv2 to edit chat messages, accessible from chat message context menus, and an implementation of Showdown as bundled by Foundry on preCreate hooks to add markdown parsing to message content. If "Show Edited Messages" is enabled, messages that are edited will be flagged once by a `chatedit: { edited: Boolean }` flag. The only other data modified is the `content` and `speaker` of chat messages when they are edited, or processed by Showdown. Now includes support for changing languages in editing through the Polyglot module.
+## Why this exists
 
-**License:** MIT license.
+Upstream blocks every context-menu action on roll messages, because editing a roll's `content` would desync it from its `rolls` array. That guard is right for content editing but was also blocking speaker reassignment, which only ever writes `speaker` and `style`. Upstream also only offered "Make In Character" on messages that were already out of character, so correcting a wrong-character message meant a round trip through OOC.
 
-**Fork Additional Info:** No chat editing mod was available for v13 so rather than continue to complain about it I decided to just make one myself. Thankfully, there was already one out there with an MIT license, so all I had to do was edit the code to work with the newer Foundry versions and appv2. Therefore, most of the work here can be credited to the original author alakshana, whom I can't thank enough for the original mod. I've really only edited some code to work for v13, changed the editor window to show markdown instead of html, and added Polyglot integration. Original thanks from them below:
+This module keeps only the reassignment path, drops both restrictions, and renames the action to something that makes sense when you are switching between two characters rather than toggling in and out of character.
 
-**Original Additional Info:** Thank you to the original (to my knowledge) chat editor module DF Chat Enhancements and its author flamewave000, and to Karakara's Chat Enhancements and its author Julia. This module carries forward some ideas originally from (to my knowledge) DF Chat Enhancements, and a few ideas from Karakara's, too (though the approach of this module varies). Thanks also to dnd5e, from which I took a tiny bit of css for the context menu groups. Thanks also to Zhell, Flix, mxzf, esheyw, ChaosOS, and Ethaks for putting up with me as I struggled to bring a chat editor module into the modern era. Thanks especially to Mana, who told me to use Showdown rather than bundling an external markdown library.
+## Credit
+
+This is a fork of [Scorpious187's Chat Edit](https://github.com/nscarpinatodev/scorpious187s-chatedit), itself a fork of [alakshana's Chat Edit](https://github.com/etiquettestartshere/chatedit) by way of [rydoq's Chat Edit Anduril](https://github.com/rydoq/chatedit-new). The speaker reassignment logic, the Polyglot and Dorako UI integrations, and the build setup are all their work. Original thanks from alakshana carried forward: to DF Chat Enhancements and flamewave000, to Karakara's Chat Enhancements and Julia, and to Zhell, Flix, mxzf, esheyw, ChaosOS, Ethaks, and Mana.
+
+MIT licensed, as upstream.

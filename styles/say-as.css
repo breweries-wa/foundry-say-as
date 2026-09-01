@@ -1,0 +1,6 @@
+/* Separate this module's entries from the rest of the chat context menu. */
+#context-menu [data-group-id="breweries-say-as"]:has(li) {
+  border-top: 1px solid var(--color-border-dark-tertiary, rgba(0, 0, 0, 0.35));
+  padding-top: 2px;
+  margin-top: 2px;
+}
