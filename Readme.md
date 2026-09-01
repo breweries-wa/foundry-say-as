@@ -1,6 +1,6 @@
 # Say As
 
-A Foundry VTT module that does one thing: **change who a chat message was said by**, from the message's right-click menu.
+A Foundry VTT module that does one thing: **change who a chat message was said by**, from the message's kebab menu.
 
 You typed as the wrong character. Someone points it out. Select the right token, right-click the message, and pick **Say As Selected Token**. Done.
 
