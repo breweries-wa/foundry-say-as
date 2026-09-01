@@ -1,7 +1,7 @@
 {
-  "id": "scorpious187s-chatedit",
-  "title": "Scorpious187's Chat Edit",
-  "version": "1.2.0",
+  "id": "breweries-chat-edit",
+  "title": "Breweries' Chat Edit",
+  "version": "1.0.0",
   "esmodules": [
     "scripts/setup.mjs"
   ],
@@ -34,10 +34,15 @@
       ]
     }
   },
-  "url": "https://github.com/nscarpinatodev/scorpious187s-chatedit",
-  "manifest": "https://github.com/nscarpinatodev/scorpious187s-chatedit/releases/latest/download/module.json",
-  "download": "https://github.com/nscarpinatodev/scorpious187s-chatedit/releases/latest/download/module.zip",
+  "url": "https://github.com/breweries-wa/foundry-chat-edit",
+  "manifest": "https://github.com/breweries-wa/foundry-chat-edit/releases/latest/download/module.json",
+  "download": "https://github.com/breweries-wa/foundry-chat-edit/releases/latest/download/module.zip",
   "authors": [
+    {
+      "name": "breweries-wa",
+      "url": "https://github.com/breweries-wa",
+      "flags": {}
+    },
     {
       "name": "Scorpious187",
       "url": "https://github.com/nscarpinatodev",
@@ -55,17 +60,5 @@
       "url": "https://github.com/rydoq",
       "flags": {}
     }
-  ],
-  "relationships": {
-    "requires": [
-      {
-        "id": "scorpious187s-lib",
-        "type": "module",
-        "manifest": "https://github.com/nscarpinatodev/scorpious187s-lib/releases/latest/download/module.json",
-        "compatibility": {
-          "minimum": "0.3.0"
-        }
-      }
-    ]
-  }
+  ]
 }

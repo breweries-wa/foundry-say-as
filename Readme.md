@@ -1,5 +1,13 @@
-# Scorpious187's Chat Edit
+# Breweries' Chat Edit
 A module for editing and styling chat messages. It is a lightweight chat editor, with no module dependencies and no external libraries. It is *not* a 'chat enhancement' module (though it might be mistaken for one). Its intent is to bring the Foundry chat message experience to the bare minimum of acceptability for text roleplay.
+
+> **This is a fork** of [Scorpious187's Chat Edit](https://github.com/nscarpinatodev/scorpious187s-chatedit), which is itself a fork of [alakshana's Chat Edit](https://github.com/etiquettestartshere/chatedit) by way of [rydoq's Chat Edit Anduril](https://github.com/rydoq/chatedit-new). Nearly all of the work here belongs to them; see Additional Info below.
+>
+> **What this fork changes:**
+> - **Speaker reassignment works on roll messages.** Upstream blocks *all* context-menu actions on rolls because editing a roll's `content` would desync it from its `rolls` array. But "Make In/Out of Character" only ever writes `speaker` and `style`, never `content`, so that restriction does not apply to them. Content editing is still blocked on rolls, as it should be.
+> - **"Make In Character" is offered on messages that are already in character.** Upstream only showed it on OOC messages, so correcting a message sent as the *wrong* character required a round-trip through OOC. Now it is a single action: select the right token, right-click, Make In Character.
+> - **A roll's `style` is left untouched during reassignment.** The emote heuristic compares message content against the speaker's name, which is meaningless for generated dice HTML and would restyle the roll card.
+> - **Dropped the `scorpious187s-lib` dependency.** No source file in this module references it; it was added upstream to register the module with the author's cross-module update notifier. Removing it makes this a single-manifest install.
 
 ## Features
 <p style="text-align: center"><img src="https://i.imgur.com/p2E8Jtg.png" style="border: none" alt="An image showing message editing in Foundry and markdown support"></p>

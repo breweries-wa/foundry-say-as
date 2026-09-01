@@ -224,15 +224,29 @@ export class Editing {
   /* -------------------------------------------- */
 
   /**
+   * Check if the message's speaker can be reassigned.
+   *
+   * Reassignment (Make In/Out of Character) only ever writes `speaker` and
+   * `style`, never `content`, so unlike content editing it is safe on roll
+   * messages -- rewriting a roll's content would desync it from its `rolls`
+   * array, but relabelling who said it does not.
+   * @param {string} id The id of the ChatMessage to be tested.
+   * @returns {boolean} Returns true if the message's speaker can be reassigned.
+   */
+  static _canReassign(id) {
+    const message = game.messages.get(id);
+    if (!message?.isAuthor) return false;
+    return foundry.utils.isEmpty(message.flags?.[game.system.id]);
+  }
+
+  /**
    * Check if the message can be edited.
    * @param {string} id The id of the ChatMessage to be tested.
    * @returns {boolean} Returns true if the message can be edited.
    */
   static _canEdit(id) {
-    const message = game.messages.get(id);
-    if (!message.isAuthor) return false;
-    if (message.isRoll) return false;
-    return foundry.utils.isEmpty(message.flags?.[game.system.id]);
+    if (!Editing._canReassign(id)) return false;
+    return !game.messages.get(id).isRoll;
   }
 
   /**
@@ -241,7 +255,7 @@ export class Editing {
    * @returns {boolean} Returns true if the message is in character.
    */
   static _isIC(id) {
-    if (!Editing._canEdit(id)) return false;
+    if (!Editing._canReassign(id)) return false;
     const message = game.messages.get(id);
     return (message.speaker.actor != null || message.speaker.token != null) && !message.whisper.length;
   }
@@ -252,7 +266,7 @@ export class Editing {
    * @returns {boolean} Returns true if the message is out of character.
    */
   static _isOOC(id) {
-    if (!Editing._canEdit(id)) return false;
+    if (!Editing._canReassign(id)) return false;
     const message = game.messages.get(id);
     return (message.speaker.actor == null && message.speaker.token == null && !message.whisper.length);
   }
@@ -276,11 +290,17 @@ export class Editing {
       ? ChatMessage.getSpeaker({ token: token.document })
       : ChatMessage.getSpeaker({ actor });
 
-    // Handle emotes (compare against the resolved speaker alias).
-    const style = message.content.startsWith(speaker.alias)
-      ? CHATEDIT_CONST.CHAT_MESSAGE_STYLES.EMOTE
-      : CHATEDIT_CONST.CHAT_MESSAGE_STYLES.IC;
-    message.update({ [STYLETYPE]: style, speaker });
+    // Handle emotes (compare against the resolved speaker alias). A roll's
+    // content is generated dice HTML, so the emote test is meaningless there
+    // and forcing an IC style would restyle the roll card -- reassign the
+    // speaker only and leave the style as-is.
+    if (message.isRoll) message.update({ speaker });
+    else {
+      const style = message.content.startsWith(speaker.alias)
+        ? CHATEDIT_CONST.CHAT_MESSAGE_STYLES.EMOTE
+        : CHATEDIT_CONST.CHAT_MESSAGE_STYLES.IC;
+      message.update({ [STYLETYPE]: style, speaker });
+    }
 
     if (PolyglotProvider) {
       const defaultLanguage = PolyglotProvider.defaultLanguage;
@@ -308,7 +328,9 @@ export class Editing {
       actor: null,
       token: null }
 
-    message.update({
+    // As in _makeIC, leave a roll's style untouched.
+    if (message.isRoll) message.update({ speaker });
+    else message.update({
       [STYLETYPE]: CHATEDIT_CONST.CHAT_MESSAGE_STYLES.OOC,
       speaker });
     if (PolyglotProvider) {
@@ -328,8 +350,14 @@ export class Editing {
         name: "CHATEDIT.EDITS.IC",
         icon: '<i class="fa-solid fa-masks-theater"></i>',
 
+        // Offered for any reassignable message, not just OOC ones: the common
+        // case is a message sent as the wrong character, which is already IC
+        // and would otherwise need a round-trip through OOC to correct.
         condition: (li) => {
-          return Editing._isOOC(li.dataset.messageId) && (canvas.tokens.controlled[0] ?? game.user.character);
+          const message = game.messages.get(li.dataset.messageId);
+          return Editing._canReassign(li.dataset.messageId)
+            && !message.whisper.length
+            && !!(canvas.tokens.controlled[0] ?? game.user.character);
         },
         callback: (li) => {
           Editing._makeIC(li.dataset.messageId);
