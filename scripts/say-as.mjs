@@ -101,17 +101,17 @@ export class SayAs {
    * @param {string} id The id of the ChatMessage to reassign.
    */
   static _speakAsSelected(id) {
-    // A controlled token is a placeable (use its TokenDocument as speaker);
-    // game.user.character is an Actor. Resolve both so we build the speaker
-    // and query Polyglot consistently regardless of which one we have.
-    const token = canvas.tokens.controlled[0] ?? null;
-    const actor = token?.actor ?? game.user.character;
-    if (!actor) return ui.notifications.warn(localize("SAYAS.NoTarget"));
+    // Deliberately requires a controlled token rather than falling back to
+    // game.user.character: that fallback would attribute the message to an
+    // actor with no token on the viewed scene, which is both surprising and
+    // not what "Selected Token" says on the tin. To speak as yourself, use
+    // Say Out Of Character.
+    const token = canvas.tokens.controlled[0];
+    if (!token?.actor) return ui.notifications.warn(localize("SAYAS.NoTarget"));
 
+    const actor = token.actor;
     const message = game.messages.get(id);
-    const speaker = token
-      ? ChatMessage.getSpeaker({ token: token.document })
-      : ChatMessage.getSpeaker({ actor });
+    const speaker = ChatMessage.getSpeaker({ token: token.document });
 
     // A roll's content is generated dice HTML, so the emote test below is
     // meaningless there and forcing an IC style would restyle the roll card --
@@ -177,9 +177,11 @@ export class SayAs {
         // Offered for any reassignable message, including ones already spoken
         // by a character: the common case is a message sent as the wrong
         // character, which would otherwise need a round trip through OOC.
+        // Hidden entirely when no token is selected, so the option is never
+        // present unless there is a real token for it to point at.
         condition: (li) => {
           return SayAs._canReassign(li.dataset.messageId)
-            && !!(canvas.tokens.controlled[0] ?? game.user.character);
+            && !!canvas.tokens.controlled[0]?.actor;
         },
         callback: (li) => SayAs._speakAsSelected(li.dataset.messageId),
         group: MODULE

@@ -10,7 +10,7 @@ Foundry v13+ (verified on v14). System agnostic. No dependencies.
 
 Right-clicking a chat message you sent adds up to two options:
 
-- **Say As Selected Token** — reattributes the message to your currently selected token, or to your assigned character if no token is selected. Shown whenever something is selected to attribute to.
+- **Say As Selected Token** — reattributes the message to your currently selected token. Hidden when no token is selected, so it can never quietly attribute a message to an actor that is not on the scene. To speak as yourself instead, use the option below.
 - **Say Out Of Character** — reattributes the message to you, out of character. Shown only when the message is currently attributed to a character.
 
 **Roll messages work.** `/roll 1d20 # search check` sent as the wrong character can be corrected like any other message.

@@ -2,7 +2,7 @@
   "SAYAS": {
     "SpeakAsSelected": "Say As Selected Token",
     "AttributeToMe": "Say Out Of Character",
-    "NoTarget": "Select a token, or assign yourself a character, first.",
+    "NoTarget": "Select the token you want to speak as first.",
     "SETTINGS": {
       "Enabled": {
         "Name": "Enable Say As",
