@@ -70,13 +70,18 @@ export class SayAs {
    * Messages carrying system flags are excluded: system chat cards can
    * re-derive their actor from those flags, so reassigning the speaker alone
    * would leave the two disagreeing.
+   *
+   * Whispers and private rolls are allowed. Who a message is addressed to is
+   * independent of who said it, and reassignment leaves the `whisper` array
+   * untouched, so visibility cannot change. It also writes a concrete
+   * speaker.alias, which makes the name render identically for every client
+   * rather than falling back per-viewer to the author's user name.
    * @param {string} id The id of the ChatMessage to be tested.
    * @returns {boolean} True if the message's speaker can be reassigned.
    */
   static _canReassign(id) {
     const message = game.messages.get(id);
     if (!message?.isAuthor) return false;
-    if (message.whisper.length) return false;
     return foundry.utils.isEmpty(message.flags?.[game.system.id]);
   }
 

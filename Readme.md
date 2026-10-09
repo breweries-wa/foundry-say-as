@@ -23,7 +23,8 @@ Nothing else. It does not edit message text, add markdown, show typing indicator
 
 - **You can only reassign messages you sent.** Foundry exposes this as `message.isAuthor`; a GM cannot correct another player's message through this menu.
 - **The speaker comes from your selected token**, so the target must be on the scene you are viewing.
-- **Whispers are excluded**, since changing a whisper's speaker does not change who can see it and the result would be misleading.
+- **Whispers and private rolls are supported.** Who a message is addressed to is independent of who said it, and reassignment never touches the `whisper` array, so visibility cannot change.
+- **Reassigning normalises the displayed name.** Foundry falls back to the author's user name when a message has no `speaker.alias` and the viewing client cannot resolve the actor — which is why a private roll can read as the token name to the GM and "Gamemaster" to everyone else. Reassignment always writes a concrete alias, so the name becomes the same for every viewer.
 - **System chat cards are excluded.** Messages carrying flags for the active system (item cards, action cards) can re-derive their actor from those flags, so reassigning the speaker alone would leave the two disagreeing.
 - **Message style is preserved on rolls.** For ordinary messages the module keeps the original emote/IC/OOC behaviour, but a roll's content is generated dice HTML, so its style is left untouched.
 - If [Polyglot](https://foundryvtt.com/packages/polyglot) is active, the message's language follows the new speaker. If PF2e Dorako UI is active, its cached avatar follows too.
