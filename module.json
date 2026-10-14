@@ -1,7 +1,7 @@
 {
   "id": "breweries-say-as",
   "title": "Say As",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "description": "Change who a chat message was said by, from the message's right-click menu. Works on rolls.",
   "esmodules": [
     "scripts/setup.mjs"
