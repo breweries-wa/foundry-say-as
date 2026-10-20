@@ -1,4 +1,4 @@
-export const MODULE = "breweries-say-as";
+export const MODULE = "say-as";
 
 export const SAYAS_CONST = {
   CHAT_MESSAGE_STYLES: {
